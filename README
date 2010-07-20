@@ -1,0 +1,4 @@
+I just trying to create easy to use and high perfomance python library to 
+build GUIs for OpenGL-based application. Main idea - use simple html-like 
+markup language to build interface and css-like rules to style interface.
+Also I want to add JavaScript support in future.
