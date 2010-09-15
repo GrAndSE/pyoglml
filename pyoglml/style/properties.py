@@ -1,69 +1,4 @@
-# Declare 
-
-FONTUNITS = (
-	'',
-	'px',
-	'%',
-	'em',
-	'pt'
-)
-
-INTUNITS = (
-	'',
-	'%',
-	'px'
-)
-
-POSITIONS = (
-	'static',
-	'relative',
-	'absolute',
-	'fixed',
-)
-
-FLOATINGS = (
-	'none',
-	'left',
-	'right',
-)
-
-HALIGNS = (
-	'left',
-	'right',
-	'center',
-)
-VALIGNS = (
-	'top',
-	'bottom',
-	'middle',
-)
-
-DISPLAY = (
-	'none',
-	'inline',
-	'block',
-	'inline',
-	'inline-block',
-	'list-item',
-	'run-in',
-	'compact',
-	'table',
-	'inline-table',
-	'table-row-group',
-	'table-header-group',
-	'table-footer-group',
-	'table-row',
-	'table-row-group',
-	'table-column',
-	'table-column-group',
-	'table-cell',
-	'table-caption',
-	'ruby',
-	'ruby-base',
-	'ruby-text',
-	'ruby-base-group',
-	'ruby-text-group',
-)
+from const import DISPLAY, FONTUNITS, FLOATINGS, HALIGNS, INTUNITS, POSITIONS
 
 class StyleProperty(object):
 	'''
@@ -108,7 +43,8 @@ class AutoIntProperty(StyleProperty):
 
 class IntProperty(StyleProperty):
 	'''
-	Style property that can accepts integer value with px or % or none or inherit
+	Style property that can accepts integer value with px or % or none or 
+	inherit
 	'''
 
 	def __init__(self):
@@ -116,10 +52,8 @@ class IntProperty(StyleProperty):
 
 	def parseValue(self, value):
 		value	= value.strip().lower()
-		if value == 'none':
-			self.value	= 'none'
-		elif value == 'inherit':
-			self.value	= 'inherit'
+		if value == 'none' or value == 'inherit':
+			self.value	= value
 		else:
 			self.value	= int(value)
 			for units in INTUNITS:
@@ -196,48 +130,45 @@ class PositionProperty(StyleProperty):
 				self.value	= position
 				return True
 
-class StyleGroup(object):
+class HorisontalAlignProperty(StyleProperty):
 	'''
-	Class provides
+	Property used for any align property
 	'''
 
-	mapping = {
-		'width':			AutoIntProperty,
-		'min-width':		IntProperty,
-		'max-width':		IntProperty,
-		'height':			AutoIntProperty,
-		'min-height':		IntProperty,
-		'max-height':		IntProperty,
-		'font-size':		NumericalProperty,
-		'margin-left':		AutoIntProperty,
-		'margin-right':		AutoIntProperty,
-		'margin-top':		AutoIntProperty,
-		'margin-bottom':	AutoIntProperty,
-		'padding-left':		AutoIntProperty,
-		'padding-right':	AutoIntProperty,
-		'padding-top':		AutoIntProperty,
-		'padding-bottom':	AutoIntProperty,
-		'line-height':		NumericalProperty,
-		'float':			FloatProperty,
-		'position':			PositionProperty,
-		'display':			DisplayProperty,
-	}
-
-	def __init__(self, name, content):
+	def __init__(self):
 		'''
-		Create new StyleGroup instance
-			.name		style group name
-			.content	style descriptions
+		Create new property instance
 		'''
-		self.name	= name
-		self.props	= {}
-		# Parse content
-		props		= content.split(';')
-		for prop in props:
-			prop_name, prop_value	= prop.split()
+		super(HorisontalAlignProperty, self).__init__()
 
-	def getPropertyStyle(self, name):
-		name	= name.strip()
-		if name in StyleGroup.mapping:
-			return StyleGroup.mapping[name]
-		return StyleProperty
+	def parseValue(self, value):
+		'''
+		Parse value
+		'''
+		value = value.strip().lower()
+		if value not in HALIGNS:
+			return False
+		self.value = value
+
+class FontSizeProperty(StyleProperty):
+	'''
+	Class used for parsing font size property
+	'''
+
+	def __init__(self):
+		'''
+		Create new property instance
+		'''
+		super(FontSizeProperty, self).__init__()
+
+	def parseValue(self, value):
+		'''
+		Parse font-size value
+		'''
+		value = value.strip().lower()
+		self.value = int(value)
+		for units in FONTUNITS:
+			if units in value:
+				self.units = units
+				return True
+
