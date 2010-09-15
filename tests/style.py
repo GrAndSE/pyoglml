@@ -1,4 +1,4 @@
-from pyoglml.style import *
+from pyoglml.style import properties
 # Test StyleProperty class
 p = StyleProperty()
 if p.parseValue(''):
